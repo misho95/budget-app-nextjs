@@ -4,6 +4,7 @@ import Post from "@/models/post.schema";
 import connectMongoDB from "./mongodb";
 import { unstable_noStore as noStore, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { signIn } from "../auth";
 
 type QueryType = {
   dateFrom: string;
@@ -89,3 +90,20 @@ export const delelteInvoiceFromDB = async (id: string) => {
     return { message: "Database Error: Failed to Delete Invoice" };
   }
 };
+
+export async function authenticate(_currentState: unknown, formData: FormData) {
+  try {
+    await signIn("credentials", formData);
+  } catch (error) {
+    if (error) {
+      return `error: ${error}`;
+      // switch (error.type) {
+      //   case "CredentialsSignin":
+      //     return "Invalid credentials.";
+      //   default:
+      //     return "Something went wrong.";
+      // }
+    }
+    throw error;
+  }
+}

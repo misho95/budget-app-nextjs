@@ -1,6 +1,7 @@
 import { LogOut, CircleUser, FilePlus2, PiggyBank } from "lucide-react";
 import Buttons from "./buttons";
 import Link from "next/link";
+import { signOut } from "@/auth";
 
 const Navigation = () => {
   return (
@@ -15,9 +16,16 @@ const Navigation = () => {
         <Buttons type="button">
           <CircleUser className="size-6" />
         </Buttons>
-        <Buttons type="button">
-          <LogOut className="size-6" />
-        </Buttons>
+        <form
+          action={async () => {
+            "use server";
+            await signOut();
+          }}
+        >
+          <Buttons type="button">
+            <LogOut className="size-6" />
+          </Buttons>
+        </form>
       </div>
     </nav>
   );

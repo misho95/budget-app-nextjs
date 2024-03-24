@@ -7,12 +7,12 @@ const Registration = () => {
         <h1 className="uppercase text-[#80475b] text-lg">registration page</h1>
         <fieldset className="border-[1.5px] border-[#ffa001] rounded-md p-1">
           <legend className="px-2 m-1 bg-[#ffa001] rounded-lg text-white select-none uppercase text-sm">
-            username
+            email
           </legend>
           <input
-            name="username"
+            name="email"
             type="text"
-            placeholder="username"
+            placeholder="email"
             className="w-full p-2 bg-transparent focus:outline-none text-[#2e3038]"
           />
         </fieldset>
