@@ -17,19 +17,18 @@ export const getPostsFromDB = async (currentPage: number, query: QueryType) => {
   try {
     await connectMongoDB();
 
-    let filter: any = {};
-
-    if (query.type !== "") {
-      filter.type = query.type;
-    }
-
-    if (query.category !== "") {
-      filter.category = query.category;
-    }
-
-    const posts = await Post.find(filter)
+    const posts = await Post.find({
+      $and: [
+        query.category ? { category: query.category } : {},
+        query.type ? { type: query.type } : {},
+        query.dateFrom ? { date: { $gte: new Date(query.dateFrom) } } : {},
+        query.dateTo ? { date: { $gte: new Date(query.dateTo) } } : {},
+      ],
+    })
       .skip((currentPage - 1) * 8)
-      .limit(8);
+      .limit(8)
+      .exec();
+
     return posts;
   } catch (err) {
     throw `error: ${err}`;
@@ -41,17 +40,16 @@ export const getPostsTotalPage = async (query: QueryType) => {
   try {
     await connectMongoDB();
 
-    let filter: any = {};
-
-    if (query.type !== "") {
-      filter.type = query.type;
-    }
-
-    if (query.category !== "") {
-      filter.category = query.category;
-    }
-
-    const posts = await Post.find(filter).countDocuments();
+    const posts = await Post.find({
+      $and: [
+        query.category ? { category: query.category } : {},
+        query.type ? { type: query.type } : {},
+        query.dateFrom ? { date: { $gte: new Date(query.dateFrom) } } : {},
+        query.dateTo ? { date: { $gte: new Date(query.dateTo) } } : {},
+      ],
+    })
+      .countDocuments()
+      .exec();
     return posts;
   } catch (err) {
     throw `error: ${err}`;

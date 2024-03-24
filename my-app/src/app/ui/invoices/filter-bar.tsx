@@ -25,17 +25,17 @@ const FilterBar = () => {
       params.delete("type");
     }
     if (category && category !== "any") {
-      params.set("category", category.toString());
+      params.set("cat", category.toString());
     } else {
-      params.delete("category");
+      params.delete("cat");
     }
     if (dateFrom) {
-      params.set("dateFrom", dateFrom.toString());
+      params.set("from", dateFrom.toString());
     } else {
       params.delete("dateFrom");
     }
     if (dateTo) {
-      params.set("dateTo", dateTo.toString());
+      params.set("to", dateTo.toString());
     } else {
       params.delete("dateTo");
     }
@@ -46,7 +46,7 @@ const FilterBar = () => {
     <div className="w-full bg-[#f4f3fa] py-2 px-5 rounded-md shadow-sm shadow-black/10 mb-3">
       <form
         action={filterPostsAction}
-        className="flex flex-col md:flex-row gap-1"
+        className="flex flex-col md:flex-row gap-1 items-center justify-between"
       >
         <label className="flex gap-1 items-center">
           <div className="w-max">Date-From: </div>
@@ -86,7 +86,9 @@ const FilterBar = () => {
             <option>income</option>
           </select>
         </label>
-        <button>Filter</button>
+        <button className="bg-[#80475b] px-5 py-1 rounded-md text-white">
+          Filter
+        </button>
       </form>
     </div>
   );
