@@ -5,11 +5,29 @@ import connectMongoDB from "./mongodb";
 import { unstable_noStore as noStore, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export const getPostsFromDB = async (currentPage: number) => {
+type QueryType = {
+  dateFrom: string;
+  dateTo: string;
+  category: string;
+  type: string;
+};
+
+export const getPostsFromDB = async (currentPage: number, query: QueryType) => {
   noStore();
   try {
     await connectMongoDB();
-    const posts = await Post.find()
+
+    let filter: any = {};
+
+    if (query.type !== "") {
+      filter.type = query.type;
+    }
+
+    if (query.category !== "") {
+      filter.category = query.category;
+    }
+
+    const posts = await Post.find(filter)
       .skip((currentPage - 1) * 8)
       .limit(8);
     return posts;
@@ -18,11 +36,22 @@ export const getPostsFromDB = async (currentPage: number) => {
   }
 };
 
-export const getPostsTotalPage = async () => {
+export const getPostsTotalPage = async (query: QueryType) => {
   noStore();
   try {
     await connectMongoDB();
-    const posts = await Post.find().countDocuments();
+
+    let filter: any = {};
+
+    if (query.type !== "") {
+      filter.type = query.type;
+    }
+
+    if (query.category !== "") {
+      filter.category = query.category;
+    }
+
+    const posts = await Post.find(filter).countDocuments();
     return posts;
   } catch (err) {
     throw `error: ${err}`;

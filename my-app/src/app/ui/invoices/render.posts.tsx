@@ -3,10 +3,11 @@ import OptionsPosts from "./options.posts";
 
 type PropsType = {
   currentPage: number;
+  query: { dateFrom: string; dateTo: string; category: string; type: string };
 };
 
-const RenderPosts = async ({ currentPage }: PropsType) => {
-  const posts = await getPostsFromDB(currentPage);
+const RenderPosts = async ({ currentPage, query }: PropsType) => {
+  const posts = await getPostsFromDB(currentPage, query);
 
   return posts.map((post) => {
     return (
