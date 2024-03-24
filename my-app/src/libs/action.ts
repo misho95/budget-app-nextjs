@@ -5,6 +5,8 @@ import connectMongoDB from "./mongodb";
 import { unstable_noStore as noStore, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { signIn } from "../auth";
+import { AuthError } from "next-auth";
+import { getSession } from "next-auth/react";
 
 type QueryType = {
   dateFrom: string;
@@ -95,14 +97,13 @@ export async function authenticate(_currentState: unknown, formData: FormData) {
   try {
     await signIn("credentials", formData);
   } catch (error) {
-    if (error) {
-      return `error: ${error}`;
-      // switch (error.type) {
-      //   case "CredentialsSignin":
-      //     return "Invalid credentials.";
-      //   default:
-      //     return "Something went wrong.";
-      // }
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return "Invalid credentials.";
+        default:
+          return "Something went wrong.";
+      }
     }
     throw error;
   }
