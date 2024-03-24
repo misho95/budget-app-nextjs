@@ -3,6 +3,8 @@ import FilterBar from "./ui/invoices/filter-bar";
 import Pagination from "./ui/invoices/pagination";
 import RenderPosts from "./ui/invoices/render.posts";
 import Separator from "./ui/invoices/separator";
+import { Suspense } from "react";
+import PostSkeleton from "./ui/invoices/post-skeleton";
 
 const Home = async ({
   searchParams,
@@ -33,10 +35,12 @@ const Home = async ({
     <div className="flex flex-col gap-1 w-full h-full p-5">
       <FilterBar />
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-1 ">
-        <RenderPosts
-          currentPage={currentPage}
-          query={{ dateFrom, dateTo, category, type }}
-        />
+        <Suspense fallback={<PostSkeleton />}>
+          <RenderPosts
+            currentPage={currentPage}
+            query={{ dateFrom, dateTo, category, type }}
+          />
+        </Suspense>
       </div>
       <Separator />
       <Pagination currentPage={currentPage} totalPage={totalPage} />

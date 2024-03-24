@@ -22,7 +22,7 @@ export const getPostsFromDB = async (currentPage: number, query: QueryType) => {
         query.category ? { category: query.category } : {},
         query.type ? { type: query.type } : {},
         query.dateFrom ? { date: { $gte: new Date(query.dateFrom) } } : {},
-        query.dateTo ? { date: { $gte: new Date(query.dateTo) } } : {},
+        query.dateTo ? { date: { $lte: new Date(query.dateTo) } } : {},
       ],
     })
       .skip((currentPage - 1) * 8)
@@ -45,7 +45,7 @@ export const getPostsTotalPage = async (query: QueryType) => {
         query.category ? { category: query.category } : {},
         query.type ? { type: query.type } : {},
         query.dateFrom ? { date: { $gte: new Date(query.dateFrom) } } : {},
-        query.dateTo ? { date: { $gte: new Date(query.dateTo) } } : {},
+        query.dateTo ? { date: { $lte: new Date(query.dateTo) } } : {},
       ],
     })
       .countDocuments()
