@@ -1,10 +1,10 @@
 import { getPostsTotalPage } from "@/libs/action";
-import FilterBar from "./ui/invoices/filter-bar";
-import Pagination from "./ui/invoices/pagination";
-import RenderPosts from "./ui/invoices/render.posts";
-import Separator from "./ui/invoices/separator";
+import FilterBar from "../ui/invoices/filter-bar";
+import Pagination from "../ui/invoices/pagination";
+import RenderPosts from "../ui/invoices/render.posts";
+import Separator from "../ui/invoices/separator";
 import { Suspense } from "react";
-import PostSkeleton from "./ui/invoices/post-skeleton";
+import PostSkeleton from "../ui/invoices/post-skeleton";
 
 const Home = async ({
   searchParams,
