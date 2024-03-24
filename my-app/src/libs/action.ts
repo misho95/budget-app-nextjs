@@ -5,11 +5,24 @@ import connectMongoDB from "./mongodb";
 import { unstable_noStore as noStore, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export const getPostsFromDB = async () => {
+export const getPostsFromDB = async (currentPage: number) => {
   noStore();
   try {
     await connectMongoDB();
-    const posts = await Post.find();
+    const posts = await Post.find()
+      .skip((currentPage - 1) * 8)
+      .limit(8);
+    return posts;
+  } catch (err) {
+    throw `error: ${err}`;
+  }
+};
+
+export const getPostsTotalPage = async () => {
+  noStore();
+  try {
+    await connectMongoDB();
+    const posts = await Post.find().countDocuments();
     return posts;
   } catch (err) {
     throw `error: ${err}`;

@@ -3,9 +3,8 @@ import mongoose from "mongoose";
 const connectMongoDB = async () => {
   try {
     mongoose.connect(process.env.MONGODB_URI ? process.env.MONGODB_URI : "");
-    console.log("Connected to MongoDB");
   } catch (error) {
-    console.log(error);
+    return { message: "can't connect to mongodb", error: error };
   }
 };
 

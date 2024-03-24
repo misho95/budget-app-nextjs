@@ -11,10 +11,7 @@ type PropsType = {
 const Buttons = ({ children, onClick, type, href }: PropsType) => {
   if (type === "button") {
     return (
-      <button
-        onClick={onClick}
-        className="bg-citrine text-richBlack p-2 rounded-full border-2 border-snow/50 shadow-sm"
-      >
+      <button onClick={onClick} className=" text-[#565656] p-2 rounded-full">
         {children}
       </button>
     );
@@ -25,7 +22,7 @@ const Buttons = ({ children, onClick, type, href }: PropsType) => {
       <Link
         href={href || ""}
         onClick={onClick}
-        className="bg-citrine text-richBlack p-2 rounded-full border-2 border-snow/50 shadow-sm"
+        className=" text-[#565656] p-2 rounded-full"
       >
         {children}
       </Link>
