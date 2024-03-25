@@ -6,7 +6,7 @@ const postSchema = new Schema(
     amount: Number,
     category: String,
     date: Date,
-    user: String,
+    userId: String,
   },
   {
     timestamps: true,

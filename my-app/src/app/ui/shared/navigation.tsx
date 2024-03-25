@@ -13,7 +13,7 @@ const Navigation = () => {
         <Buttons type={"link"} href="/create">
           <FilePlus2 className="size-6" />
         </Buttons>
-        <Buttons type="button">
+        <Buttons type={"link"} href="/profile">
           <CircleUser className="size-6" />
         </Buttons>
         <form

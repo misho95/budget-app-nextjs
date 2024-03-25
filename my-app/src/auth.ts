@@ -20,6 +20,14 @@ async function getUser(email: string): Promise<UserType | undefined> {
 
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
+  callbacks: {
+    session: async ({ session, token }) => {
+      if (token.sub) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
+  },
   providers: [
     Credentials({
       async authorize(credentials) {

@@ -9,6 +9,10 @@ type PropsType = {
 const RenderPosts = async ({ currentPage, query }: PropsType) => {
   const posts = await getPostsFromDB(currentPage, query);
 
+  if (posts.length === 0) {
+    return <div className="p-5 w-full text-center">No invoices found</div>;
+  }
+
   return posts.map((post) => {
     return (
       <article

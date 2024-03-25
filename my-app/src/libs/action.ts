@@ -28,7 +28,7 @@ export const getPostsFromDB = async (currentPage: number, query: QueryType) => {
     await connectMongoDB();
 
     const posts = await Post.find({
-      user: user.user?.email,
+      userId: user.user?.id,
       $and: [
         query.category ? { category: query.category } : {},
         query.type ? { type: query.type } : {},
@@ -52,13 +52,13 @@ export const getPostsTotalPage = async (query: QueryType) => {
     const user = await auth();
 
     if (!user) {
-      return [];
+      return 0;
     }
 
     await connectMongoDB();
 
     const posts = await Post.find({
-      user: user.user?.email,
+      userId: user.user?.id,
       $and: [
         query.category ? { category: query.category } : {},
         query.type ? { type: query.type } : {},
@@ -78,7 +78,7 @@ export const createNewInvoiceInDB = async (formData: FormData) => {
   const user = await auth();
 
   if (!user) {
-    return { message: "no access!" };
+    throw { message: "no access!" };
   }
 
   const rawFormData = {
@@ -92,7 +92,7 @@ export const createNewInvoiceInDB = async (formData: FormData) => {
 
   try {
     await connectMongoDB();
-    await Post.create({ type, amount, category, date, user: user.user?.email });
+    await Post.create({ type, amount, category, date, userId: user.user?.id });
   } catch (err) {
     return {
       message: "Database Error: Failed to Create Invoice.",
@@ -176,4 +176,53 @@ export const registrateUser = async (
   if (success) {
     await authenticate(undefined, formData);
   }
+};
+
+export const getUserProfile = async () => {
+  try {
+    const user = await auth();
+    if (!user) {
+      return { message: "no access!" };
+    }
+
+    return User.findById(user.user?.id);
+  } catch (err) {
+    return { message: "no access!" };
+  }
+};
+
+export const updateUserProfile = async (
+  _currentState: unknown,
+  formData: FormData
+) => {
+  try {
+    const user = await auth();
+    if (!user) {
+      return { message: "no access" };
+    }
+    const rawFormData = {
+      username: formData.get("username"),
+      firstname: formData.get("firstname"),
+      lastname: formData.get("lastname"),
+    };
+
+    const { username, firstname, lastname } = rawFormData;
+
+    await connectMongoDB();
+
+    await User.findOneAndUpdate(
+      { _id: user.user?.id },
+      {
+        $set: {
+          username,
+          firstname,
+          lastname,
+        },
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
+
+  revalidatePath("/profile");
 };

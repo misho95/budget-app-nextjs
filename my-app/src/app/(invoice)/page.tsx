@@ -5,6 +5,7 @@ import RenderPosts from "../ui/invoices/render.posts";
 import Separator from "../ui/invoices/separator";
 import { Suspense } from "react";
 import PostSkeleton from "../ui/invoices/post-skeleton";
+import { auth } from "@/auth";
 
 const Home = async ({
   searchParams,
@@ -30,6 +31,8 @@ const Home = async ({
       type,
     })) / 8
   );
+
+  const user = await auth();
 
   return (
     <div className="flex flex-col gap-1 w-full h-full p-5">
