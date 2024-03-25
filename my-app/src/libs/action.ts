@@ -4,9 +4,10 @@ import Post from "@/models/post.schema";
 import connectMongoDB from "./mongodb";
 import { unstable_noStore as noStore, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { signIn } from "../auth";
+import { auth, signIn } from "../auth";
 import { AuthError } from "next-auth";
-import { getSession } from "next-auth/react";
+import User from "@/models/user.schema";
+import { hashSync } from "bcrypt";
 
 type QueryType = {
   dateFrom: string;
@@ -18,9 +19,16 @@ type QueryType = {
 export const getPostsFromDB = async (currentPage: number, query: QueryType) => {
   noStore();
   try {
+    const user = await auth();
+
+    if (!user) {
+      return [];
+    }
+
     await connectMongoDB();
 
     const posts = await Post.find({
+      user: user.user?.email,
       $and: [
         query.category ? { category: query.category } : {},
         query.type ? { type: query.type } : {},
@@ -41,9 +49,16 @@ export const getPostsFromDB = async (currentPage: number, query: QueryType) => {
 export const getPostsTotalPage = async (query: QueryType) => {
   noStore();
   try {
+    const user = await auth();
+
+    if (!user) {
+      return [];
+    }
+
     await connectMongoDB();
 
     const posts = await Post.find({
+      user: user.user?.email,
       $and: [
         query.category ? { category: query.category } : {},
         query.type ? { type: query.type } : {},
@@ -60,6 +75,12 @@ export const getPostsTotalPage = async (query: QueryType) => {
 };
 
 export const createNewInvoiceInDB = async (formData: FormData) => {
+  const user = await auth();
+
+  if (!user) {
+    return { message: "no access!" };
+  }
+
   const rawFormData = {
     type: formData.get("type"),
     amount: formData.get("amount"),
@@ -71,7 +92,7 @@ export const createNewInvoiceInDB = async (formData: FormData) => {
 
   try {
     await connectMongoDB();
-    await Post.create({ type, amount, category, date });
+    await Post.create({ type, amount, category, date, user: user.user?.email });
   } catch (err) {
     return {
       message: "Database Error: Failed to Create Invoice.",
@@ -108,3 +129,51 @@ export async function authenticate(_currentState: unknown, formData: FormData) {
     throw error;
   }
 }
+
+export const registrateUser = async (
+  _currentState: unknown,
+  formData: FormData
+) => {
+  let success = false;
+
+  try {
+    const rawFormData = {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      rePassword: formData.get("re-password"),
+    };
+
+    await connectMongoDB();
+
+    const { email, password, rePassword } = rawFormData;
+
+    const isEmailExist = await User.findOne({ email });
+
+    if (isEmailExist) {
+      throw { message: "email shoud be unique" };
+    }
+
+    if (password?.toString() !== rePassword?.toString()) {
+      throw { message: "passwords do not match" };
+    }
+    if (password) {
+      const hashedPass = hashSync(password.toString(), 10);
+      await User.create({ email: email, password: hashedPass });
+      success = true;
+    }
+  } catch (error: any) {
+    console.log(error);
+    switch (error.message) {
+      case "email shoud be unique":
+        return "Email must be unique";
+      case "passwords do not match":
+        return "Passwords do not match";
+      default:
+        return "Something went wrong.";
+    }
+  }
+
+  if (success) {
+    await authenticate(undefined, formData);
+  }
+};

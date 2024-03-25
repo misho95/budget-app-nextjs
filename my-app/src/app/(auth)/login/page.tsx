@@ -20,6 +20,7 @@ const Login = () => {
             type="text"
             placeholder="email"
             className="w-full p-2 bg-transparent focus:outline-none text-[#2e3038]"
+            required
           />
         </fieldset>
         <fieldset className="border-[1.5px] border-[#ffa001] rounded-md p-1">
@@ -31,6 +32,7 @@ const Login = () => {
             type="password"
             placeholder="*********"
             className="w-full p-2 bg-transparent focus:outline-none text-[#2e3038]"
+            required
           />
         </fieldset>
         <div className="text-sm text-[#ffa001] capitalize">
@@ -64,9 +66,15 @@ const LoginButton = () => {
   return (
     <button
       aria-disabled={pending}
+      disabled={pending}
       type="submit"
-      className="bg-[#80475b] py-2 rounded-md text-white uppercase"
+      className="bg-[#80475b] py-2 rounded-md text-white uppercase aria-disabled:cursor-not-allowed relative"
     >
+      {pending && (
+        <div className="m-2 size-5 border-[3px] border-white/50 rounded-full animate-spin absolute left-[5px] top-[2px]">
+          <div className="size-5 border-l-[3px] border-white rounded-full absolute -left-[3px] -top-[3px]" />
+        </div>
+      )}
       Login
     </button>
   );
