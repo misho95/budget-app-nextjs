@@ -103,6 +103,59 @@ export const createNewInvoiceInDB = async (formData: FormData) => {
   redirect("/");
 };
 
+export const getPostById = async (id: string) => {
+  try {
+    const user = await auth();
+
+    if (!user) {
+      return null;
+    }
+
+    await connectMongoDB();
+    const post = await Post.findById(id);
+    return post;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const editPostById = async (
+  id: string,
+  _currentState: unknown,
+  formData: FormData
+) => {
+  try {
+    const user = await auth();
+
+    if (!user) {
+      return { message: "no access" };
+    }
+
+    const rawFormData = {
+      type: formData.get("type"),
+      amount: formData.get("amount"),
+      category: formData.get("category"),
+      date: formData.get("date"),
+    };
+
+    const { type, amount, category, date } = rawFormData;
+
+    await Post.findOneAndUpdate({
+      _id: id,
+      $set: {
+        type,
+        amount,
+        category,
+        date,
+      },
+    });
+  } catch (err) {
+    return { message: "no access" };
+  }
+  revalidatePath("/");
+  redirect("/");
+};
+
 export const delelteInvoiceFromDB = async (id: string) => {
   try {
     await connectMongoDB();
