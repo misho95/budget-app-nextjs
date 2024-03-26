@@ -310,7 +310,7 @@ export const updateUserProfile = async (
       }
     );
   } catch (err) {
-    console.log(err);
+    return { message: "no access" };
   }
 
   revalidatePath("/profile");
