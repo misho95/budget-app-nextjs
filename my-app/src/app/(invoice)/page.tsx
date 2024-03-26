@@ -6,6 +6,7 @@ import Separator from "../ui/invoices/separator";
 import { Suspense } from "react";
 import PostSkeleton from "../ui/invoices/post-skeleton";
 import { auth } from "@/auth";
+import Stats from "../ui/stats/stats";
 
 const Home = async ({
   searchParams,
@@ -51,6 +52,7 @@ const Home = async ({
       <Separator />
       <Pagination currentPage={currentPage} totalPage={totalPage} />
       <Separator />
+      <Stats />
     </div>
   );
 };

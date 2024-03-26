@@ -1,6 +1,11 @@
 import EditForm from "@/app/ui/invoices/edit-form";
 import { getPostById } from "@/libs/action";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
+
+export const metadata: Metadata = {
+  title: "Edit",
+};
 
 const Edit = async ({ params }: { params: { id: string } }) => {
   const postId = params.id;

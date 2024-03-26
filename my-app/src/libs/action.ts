@@ -156,6 +156,57 @@ export const delelteInvoiceFromDB = async (id: string) => {
   }
 };
 
+export const getInvoiceStats = async (id: string) => {
+  try {
+    const posts = await Post.find({ userId: id });
+
+    const expense = posts.filter((f) => f.type === "expense");
+    const income = posts.filter((f) => f.type === "income");
+    const expenseTotalAmount = posts.reduce((total, f) => {
+      if (f.type === "expense") {
+        return total + f.amount;
+      }
+      return total;
+    }, 0);
+    const incomeTotalAmount = posts.reduce((total, f) => {
+      if (f.type === "income") {
+        return total + f.amount;
+      }
+      return total;
+    }, 0);
+
+    const totalCategory = posts.reduce(
+      (total, f) => {
+        if (f.category === "shopping") {
+          return { ...total, shopping: total.shopping + 1 };
+        } else if (f.category === "gym") {
+          return { ...total, gym: total.gym + 1 };
+        } else if (f.category === "invoice") {
+          return { ...total, invoice: total.invoice + 1 };
+        } else if (f.category === "other") {
+          return { ...total, other: total.other + 1 };
+        }
+        return total;
+      },
+      {
+        shopping: 0,
+        gym: 0,
+        invoice: 0,
+        other: 0,
+      }
+    );
+
+    return {
+      expense: { total: expense.length, amount: expenseTotalAmount },
+      income: { total: income.length, amount: incomeTotalAmount },
+      diff: incomeTotalAmount - expenseTotalAmount,
+      category: totalCategory,
+    };
+  } catch (err) {
+    return { message: "no invoices found" };
+  }
+};
+
 export async function authenticate(_currentState: unknown, formData: FormData) {
   try {
     await signIn("credentials", formData);
