@@ -1,14 +1,22 @@
 import ProfileForm from "@/app/ui/profile/profile-form";
+import { auth } from "@/auth";
 import { getUserProfile } from "@/libs/action";
 import { SquareUser } from "lucide-react";
 import { Suspense } from "react";
 
 const Profile = async () => {
-  const user = await getUserProfile();
+  const userSession = await auth();
+  const user = await getUserProfile(userSession?.user?.id);
 
   const { firstname, lastname, username, email } = user;
 
-  const userToPass = { firstname, lastname, username, email };
+  const userToPass = {
+    firstname,
+    lastname,
+    username,
+    email,
+    id: userSession?.user?.id,
+  };
 
   return (
     <div className="p-5 flex flex-col gap-5">

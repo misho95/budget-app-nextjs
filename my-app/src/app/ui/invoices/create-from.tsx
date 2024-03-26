@@ -1,31 +1,13 @@
 "use client";
 
-import { editPostById } from "@/libs/action";
+import { createNewInvoiceInDB } from "@/libs/action";
 import { useState } from "react";
 import { useFormState } from "react-dom";
 
-type PropsType = {
-  post: {
-    id: string;
-    amount: number;
-    date: string;
-    category: string;
-    type: string;
-  };
-};
-
-const EditForm = ({ post }: PropsType) => {
-  const [type, setType] = useState(post.type);
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is zero-based
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-  const updateInvoice = editPostById.bind(null, post.id);
-  const [errorMessage, dispatch] = useFormState(updateInvoice, undefined);
+const CreateForm = ({ id }: { id: string }) => {
+  const [type, setType] = useState("expense");
+  const createNewInvoice = createNewInvoiceInDB.bind(null, id);
+  const [errorMessage, dispatch] = useFormState(createNewInvoice, undefined);
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -40,7 +22,6 @@ const EditForm = ({ post }: PropsType) => {
               placeholder="amount"
               name="amount"
               className="w-full p-1 rounded-md border-[1px] focus:outline-none"
-              defaultValue={post.amount}
               required
             />
           </label>
@@ -49,7 +30,6 @@ const EditForm = ({ post }: PropsType) => {
               type="date"
               name="date"
               className="w-full p-1 rounded-md border-[1px] focus:outline-none"
-              defaultValue={formatDate(post.date)}
               required
             />
           </label>
@@ -69,7 +49,6 @@ const EditForm = ({ post }: PropsType) => {
             <select
               name="category"
               className="w-full p-1 rounded-md border-[1px] focus:outline-none"
-              defaultValue={post.category}
               required
             >
               {type === "expense" ? (
@@ -105,4 +84,4 @@ const EditForm = ({ post }: PropsType) => {
   );
 };
 
-export default EditForm;
+export default CreateForm;

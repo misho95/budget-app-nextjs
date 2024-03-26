@@ -16,19 +16,21 @@ type QueryType = {
   type: string;
 };
 
-export const getPostsFromDB = async (currentPage: number, query: QueryType) => {
+export const getPostsFromDB = async (
+  currentPage: number,
+  query: QueryType,
+  userId: string | undefined
+) => {
   noStore();
   try {
-    const user = await auth();
-
-    if (!user) {
+    if (!userId) {
       return [];
     }
 
     await connectMongoDB();
 
     const posts = await Post.find({
-      userId: user.user?.id,
+      userId: userId,
       $and: [
         query.category ? { category: query.category } : {},
         query.type ? { type: query.type } : {},
@@ -46,19 +48,20 @@ export const getPostsFromDB = async (currentPage: number, query: QueryType) => {
   }
 };
 
-export const getPostsTotalPage = async (query: QueryType) => {
+export const getPostsTotalPage = async (
+  query: QueryType,
+  userId: string | undefined
+) => {
   noStore();
   try {
-    const user = await auth();
-
-    if (!user) {
+    if (!userId) {
       return 0;
     }
 
     await connectMongoDB();
 
     const posts = await Post.find({
-      userId: user.user?.id,
+      userId: userId,
       $and: [
         query.category ? { category: query.category } : {},
         query.type ? { type: query.type } : {},
@@ -74,13 +77,11 @@ export const getPostsTotalPage = async (query: QueryType) => {
   }
 };
 
-export const createNewInvoiceInDB = async (formData: FormData) => {
-  const user = await auth();
-
-  if (!user) {
-    throw { message: "no access!" };
-  }
-
+export const createNewInvoiceInDB = async (
+  id: string,
+  _currentState: unknown,
+  formData: FormData
+) => {
   const rawFormData = {
     type: formData.get("type"),
     amount: formData.get("amount"),
@@ -92,7 +93,7 @@ export const createNewInvoiceInDB = async (formData: FormData) => {
 
   try {
     await connectMongoDB();
-    await Post.create({ type, amount, category, date, userId: user.user?.id });
+    await Post.create({ type, amount, category, date, userId: id });
   } catch (err) {
     return {
       message: "Database Error: Failed to Create Invoice.",
@@ -105,12 +106,6 @@ export const createNewInvoiceInDB = async (formData: FormData) => {
 
 export const getPostById = async (id: string) => {
   try {
-    const user = await auth();
-
-    if (!user) {
-      return null;
-    }
-
     await connectMongoDB();
     const post = await Post.findById(id);
     return post;
@@ -125,12 +120,6 @@ export const editPostById = async (
   formData: FormData
 ) => {
   try {
-    const user = await auth();
-
-    if (!user) {
-      return { message: "no access" };
-    }
-
     const rawFormData = {
       type: formData.get("type"),
       amount: formData.get("amount"),
@@ -231,28 +220,24 @@ export const registrateUser = async (
   }
 };
 
-export const getUserProfile = async () => {
+export const getUserProfile = async (id: string | undefined) => {
   try {
-    const user = await auth();
-    if (!user) {
-      return { message: "no access!" };
+    if (!id) {
+      return { message: "no access" };
     }
 
-    return User.findById(user.user?.id);
+    return User.findById(id);
   } catch (err) {
     return { message: "no access!" };
   }
 };
 
 export const updateUserProfile = async (
+  id: string,
   _currentState: unknown,
   formData: FormData
 ) => {
   try {
-    const user = await auth();
-    if (!user) {
-      return { message: "no access" };
-    }
     const rawFormData = {
       username: formData.get("username"),
       firstname: formData.get("firstname"),
@@ -264,7 +249,7 @@ export const updateUserProfile = async (
     await connectMongoDB();
 
     await User.findOneAndUpdate(
-      { _id: user.user?.id },
+      { _id: id },
       {
         $set: {
           username,

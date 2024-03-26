@@ -8,7 +8,8 @@ type PropsType = {
 };
 
 const ProfileForm = ({ user }: PropsType) => {
-  const [errorMessage, dispatch] = useFormState(updateUserProfile, undefined);
+  const updateProfile = updateUserProfile.bind(null, user.id);
+  const [errorMessage, dispatch] = useFormState(updateProfile, undefined);
 
   return (
     <form action={dispatch} className="max-w-[300px] flex flex-col gap-3">

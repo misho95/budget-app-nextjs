@@ -1,5 +1,6 @@
 import { getPostsFromDB } from "@/libs/action";
 import OptionsPosts from "./options.posts";
+import { auth } from "@/auth";
 
 type PropsType = {
   currentPage: number;
@@ -7,7 +8,9 @@ type PropsType = {
 };
 
 const RenderPosts = async ({ currentPage, query }: PropsType) => {
-  const posts = await getPostsFromDB(currentPage, query);
+  const user = await auth();
+
+  const posts = await getPostsFromDB(currentPage, query, user?.user?.id);
 
   if (posts.length === 0) {
     return <div className="p-5 w-full text-center">No invoices found</div>;

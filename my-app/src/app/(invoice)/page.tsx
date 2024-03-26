@@ -18,21 +18,24 @@ const Home = async ({
     type?: string;
   };
 }) => {
+  const user = await auth();
+
   const dateFrom = searchParams?.from || "";
   const dateTo = searchParams?.to || "";
   const category = searchParams?.cat || "";
   const type = searchParams?.type || "";
   const currentPage = Number(searchParams?.page) || 1;
   const totalPage = Math.ceil(
-    (await getPostsTotalPage({
-      dateFrom,
-      dateTo,
-      category,
-      type,
-    })) / 8
+    (await getPostsTotalPage(
+      {
+        dateFrom,
+        dateTo,
+        category,
+        type,
+      },
+      user?.user?.id
+    )) / 8
   );
-
-  const user = await auth();
 
   return (
     <div className="flex flex-col gap-1 w-full h-full p-5">
