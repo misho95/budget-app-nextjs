@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import RenderStats from "./render.stats";
 import { Suspense } from "react";
+import StatsSkeleton from "./stats.skeleton";
 
 const Stats = async () => {
   const user = await auth();
@@ -10,8 +11,8 @@ const Stats = async () => {
   }
 
   return (
-    <div>
-      <Suspense>
+    <div className="w-full">
+      <Suspense fallback={<StatsSkeleton />}>
         <RenderStats id={user?.user?.id} />
       </Suspense>
     </div>

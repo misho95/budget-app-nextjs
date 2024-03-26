@@ -1,4 +1,5 @@
 import ProfileForm from "@/app/ui/profile/profile-form";
+import Stats from "@/app/ui/stats/stats";
 import { auth } from "@/auth";
 import { getUserProfile } from "@/libs/action";
 import { SquareUser } from "lucide-react";
@@ -24,13 +25,18 @@ const Profile = async () => {
   };
 
   return (
-    <div className="p-5 flex flex-col gap-5">
-      <div>
-        <SquareUser className="size-20 text-black/20" />
+    <div className="p-5 flex flex-col md:flex-row gap-5">
+      <div className="min-w-[300px]">
+        <div>
+          <SquareUser className="size-20 text-black/20" />
+        </div>
+        <Suspense>
+          <ProfileForm user={userToPass} />
+        </Suspense>
       </div>
-      <Suspense>
-        <ProfileForm user={userToPass} />
-      </Suspense>
+      <div className="w-full">
+        <Stats />
+      </div>
     </div>
   );
 };

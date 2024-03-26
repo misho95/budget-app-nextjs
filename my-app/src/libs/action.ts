@@ -38,8 +38,8 @@ export const getPostsFromDB = async (
         query.dateTo ? { date: { $lte: new Date(query.dateTo) } } : {},
       ],
     })
-      .skip((currentPage - 1) * 8)
-      .limit(8)
+      .skip((currentPage - 1) * 16)
+      .limit(16)
       .exec();
 
     return posts;

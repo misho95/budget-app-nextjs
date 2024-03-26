@@ -6,7 +6,6 @@ import Separator from "../ui/invoices/separator";
 import { Suspense } from "react";
 import PostSkeleton from "../ui/invoices/post-skeleton";
 import { auth } from "@/auth";
-import Stats from "../ui/stats/stats";
 
 const Home = async ({
   searchParams,
@@ -35,24 +34,27 @@ const Home = async ({
         type,
       },
       user?.user?.id
-    )) / 8
+    )) / 16
   );
 
   return (
-    <div className="flex flex-col gap-1 w-full h-full p-5">
-      <FilterBar />
-      <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-1 ">
-        <Suspense fallback={<PostSkeleton />}>
-          <RenderPosts
-            currentPage={currentPage}
-            query={{ dateFrom, dateTo, category, type }}
-          />
-        </Suspense>
+    <div className="flex flex-col justify-between gap-1 w-full h-full p-5">
+      <div>
+        <FilterBar />
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-1 ">
+          <Suspense fallback={<PostSkeleton />}>
+            <RenderPosts
+              currentPage={currentPage}
+              query={{ dateFrom, dateTo, category, type }}
+            />
+          </Suspense>
+        </div>
       </div>
-      <Separator />
-      <Pagination currentPage={currentPage} totalPage={totalPage} />
-      <Separator />
-      <Stats />
+      <div>
+        <Separator />
+        <Pagination currentPage={currentPage} totalPage={totalPage} />
+        <Separator />
+      </div>
     </div>
   );
 };

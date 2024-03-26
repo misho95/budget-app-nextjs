@@ -46,9 +46,9 @@ const FilterBar = () => {
     <div className="w-full bg-[#f4f3fa] py-2 px-5 rounded-md shadow-sm shadow-black/10 mb-3">
       <form
         action={filterPostsAction}
-        className="flex flex-col md:flex-row gap-3 items-center justify-between"
+        className="flex flex-col md:flex-row gap-3 items-center justify-between "
       >
-        <div className="flex flex-col md:flex-row gap-5">
+        <div className="flex flex-col md:flex-row gap-5 flex-wrap">
           <label className="flex gap-1 items-center">
             <div className="w-max">Date-From: </div>
             <input
