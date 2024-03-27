@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const FilterBar = () => {
+const FilterBar = ({ handler }: { handler?: () => void }) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -42,9 +42,30 @@ const FilterBar = () => {
     replace(`${pathname}?${params.toString()}`);
   };
 
+  const handleReset = () => {
+    const params = new URLSearchParams(searchParams);
+    if (params.get("type")) {
+      params.delete("type");
+    }
+    if (params.get("cat")) {
+      params.delete("cat");
+    }
+    if (params.get("from")) {
+      params.delete("from");
+    }
+    if (params.get("to")) {
+      params.delete("to");
+    }
+    replace(`${pathname}?${params.toString()}`);
+    if (handler) {
+      handler();
+    }
+  };
+
   return (
     <div className="w-full bg-[#f4f3fa] py-2 px-5 rounded-md shadow-sm shadow-black/10 mb-3">
       <form
+        onSubmit={handler}
         action={filterPostsAction}
         className="flex flex-col md:flex-row gap-3 items-center justify-between "
       >
@@ -55,6 +76,7 @@ const FilterBar = () => {
               type="date"
               className="w-full p-1 rounded-md border-[1px] focus:outline-none"
               name="dateFrom"
+              defaultValue={searchParams.get("from") || ""}
             />
           </label>
           <label className="flex gap-1 items-center">
@@ -63,6 +85,7 @@ const FilterBar = () => {
               type="date"
               className="w-full p-1 rounded-md border-[1px] focus:outline-none"
               name="dateTo"
+              defaultValue={searchParams.get("to") || ""}
             />
           </label>
           <label className="flex gap-1 items-center">
@@ -70,10 +93,11 @@ const FilterBar = () => {
             <select
               name="category"
               className="w-full p-1 rounded-md border-[1px] focus:outline-none"
+              defaultValue={searchParams.get("cat") || "any"}
             >
-              <option>any</option>
-              <option>shopping</option>
-              <option>gym</option>
+              <option value="any">any</option>
+              <option value="shopping">shopping</option>
+              <option value="gym">gym</option>
             </select>
           </label>
           <label className="flex gap-1 items-center">
@@ -81,16 +105,26 @@ const FilterBar = () => {
             <select
               name="type"
               className="w-full p-1 rounded-md border-[1px] focus:outline-none"
+              defaultValue={searchParams.get("type") || "any"}
             >
-              <option>any</option>
-              <option>expense</option>
-              <option>income</option>
+              <option value="any">any</option>
+              <option value="expense">expense</option>
+              <option value="income">income</option>
             </select>
           </label>
         </div>
-        <button className="bg-[#80475b] px-5 py-1 rounded-md text-white">
-          Filter
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={handleReset}
+            className="bg-[#ffa001] px-5 py-1 rounded-md text-white"
+          >
+            Reset
+          </button>
+          <button className="bg-[#80475b] px-5 py-1 rounded-md text-white">
+            Filter
+          </button>
+        </div>
       </form>
     </div>
   );

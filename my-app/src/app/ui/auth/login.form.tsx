@@ -54,6 +54,11 @@ const LoginForm = () => {
           </>
         )}
       </div>
+      <div className="text-sm text-black/50">
+        <h1 className="text-base">Demo User</h1>
+        <p>email: misho@mail.ru</p>
+        <p>password: 123456</p>
+      </div>
     </div>
   );
 };

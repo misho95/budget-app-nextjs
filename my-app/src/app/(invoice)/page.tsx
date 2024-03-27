@@ -6,6 +6,7 @@ import Separator from "../ui/invoices/separator";
 import { Suspense } from "react";
 import PostSkeleton from "../ui/invoices/post-skeleton";
 import { auth } from "@/auth";
+import FilterBarMobile from "../ui/invoices/filter.bar.mobile";
 
 const Home = async ({
   searchParams,
@@ -40,7 +41,14 @@ const Home = async ({
   return (
     <div className="flex flex-col justify-between gap-1 w-full h-full p-5">
       <div>
-        <FilterBar />
+        <div>
+          <div className="hidden md:flex">
+            <FilterBar />
+          </div>
+          <div className="flex md:hidden">
+            <FilterBarMobile />
+          </div>
+        </div>
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-1 ">
           <Suspense fallback={<PostSkeleton />}>
             <RenderPosts
