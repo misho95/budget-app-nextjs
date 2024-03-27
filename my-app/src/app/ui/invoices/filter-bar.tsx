@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Calendar } from "lucide-react";
 
 const FilterBar = ({ handler }: { handler?: () => void }) => {
   const searchParams = useSearchParams();
@@ -63,15 +64,15 @@ const FilterBar = ({ handler }: { handler?: () => void }) => {
   };
 
   return (
-    <div className="w-full bg-[#f4f3fa] py-2 px-5 rounded-md shadow-sm shadow-black/10 mb-3">
+    <div className="w-full bg-[#f4f3fa] py-5 md:py-2 px-5 rounded-md shadow-sm shadow-black/10 mb-3">
       <form
         onSubmit={handler}
         action={filterPostsAction}
         className="flex flex-col md:flex-row gap-3 items-center justify-between "
       >
-        <div className="flex flex-col md:flex-row gap-5 flex-wrap">
+        <div className="flex flex-col md:flex-row gap-3 flex-wrap">
           <label className="flex gap-1 items-center">
-            <div className="w-max">Date-From: </div>
+            <div className="w-max">From:</div>
             <input
               type="date"
               className="w-full p-1 rounded-md border-[1px] focus:outline-none"
@@ -80,7 +81,7 @@ const FilterBar = ({ handler }: { handler?: () => void }) => {
             />
           </label>
           <label className="flex gap-1 items-center">
-            <div>Date-To: </div>
+            <div>To:</div>
             <input
               type="date"
               className="w-full p-1 rounded-md border-[1px] focus:outline-none"
